@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang ="ja">
+    <head>
+        <meta http-equiv="content-type" content="text/html"; charset="utf-8">
+        <link rel="stylesheet" 
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        crossorigin="anonymous">
+        <title><%=title %></title>
+    </head>
+
+    <body class="container">
+        <header>
+            <h1 class="display-4"><%=title %></h1>
+        </header>
+        <div role="main">
+            <p><%=content %></p>
+            <table class=""table>
+                <% for(var key in data) { %>
+                <tr>
+                    <th><%=key %></th>
+                    <td><%=data[key] %></td>
+                </tr>
+                <% } %>
+            </table>
+        </div>
+    </body>
+
+</html>
+
+<!--
+    http-equiv:HTTPヘッダ名を指定
+    content:内容を指定
+    charset:文字コード指定
+    パース処理:データを解析して本来の状態に組み立てなおす処理のこと
+-->
