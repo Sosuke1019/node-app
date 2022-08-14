@@ -14,12 +14,10 @@
         </header>
         <div role="main">
             <p><%=content %></p>
-            <table class=""table>
-                <% for(var key in data) { %>
-                <tr>
-                    <th><%=key %></th>
-                    <td><%=data[key] %></td>
-                </tr>
+            <table class="table">
+                    <% var id = 0; %>
+                    <% for(var key in data) %> { %>
+                    <%- include('data_item', {id:++id, key:key, val:[data[key]]}) %>
                 <% } %>
             </table>
         </div>
