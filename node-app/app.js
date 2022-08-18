@@ -57,6 +57,13 @@ var data = {
     'Yukirin':'050-555-555',
 };
 
+var data2 = {
+    'Taro' : ['taro@yamada','09-999-999','Tokyo'],
+    'Hanako': ['hanako@flower','080-888-888','Yokohama'],
+    'Sachiko':['sachi@happy','070-777-777','Nagoya'],
+    'Ichiro':['ichi@baseball','060-666-666','USA'],
+}
+
 
 //indexのアクセス処理
 function res_index(req,res) {
@@ -76,6 +83,15 @@ function res_index(req,res) {
 //otherのアクセス処理
 function res_other(req,res) {
     var msg = "This is an Other page."
+    var content = ejs.render(other_page,{
+        title: "Other",
+        content: msg,
+        data: data2,
+        filename: 'data_item'
+    });
+    res.writeHead(200, { 'Content-Type': 'text/html'});
+    res.write(content);
+    res.end();
 
     //POSTアクセス時の処理
     if (req.method == 'POST') {

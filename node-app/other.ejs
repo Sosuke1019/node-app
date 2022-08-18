@@ -12,10 +12,14 @@
 
     <body class="container">
         <header>
-            <h1 class="displya-4"><%= title%></h1>
+            <h1 class="displya-4"><%=title %></h1>
         </header>
         <div role="main">
             <p><%=content %></p>
+            <% var id = 0; %>
+            <% for(var key in data) { %>
+            <%- include('data_item', {id:++id, key:key, val:[data[key]]})  %>
+            <% } %>
         </div>
     </body>
 
