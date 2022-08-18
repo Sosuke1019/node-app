@@ -49,13 +49,7 @@ function getFromClient(req,res) {
 
 
 //追加するデータ用変数
-var data = {
-    'Taro':'09-999-999',
-    'Hanako': '080-888-888',
-    'Sachiko':'070-777-777',
-    'Ichiro': '060-666-666',
-    'Yukirin':'050-555-555',
-};
+var data = { msg: 'no message...'};
 
 var data2 = {
     'Taro' : ['taro@yamada','09-999-999','Tokyo'],
@@ -67,17 +61,38 @@ var data2 = {
 
 //indexのアクセス処理
 function res_index(req,res) {
-    var msg = "This is a Index Page."
+    //POSTアクセス時の処理
+    if (req.method == 'POST') {
+        var body = '';
+
+        //データ受信のイベント処理
+        req.on('data',(data) =>{
+            body += data;
+        });
+
+        //データ受信終了のイベント処理
+        req.on('end',() => {
+            data = qs.parse(body); //データのパース
+            write_index(req,res);
+        });
+    } else {
+        write_index(req,res);
+    }
+}
+
+//indexの表示の作成
+function write_index(req,res) {
+    var msg = "※伝言を表示します。"
     var content = ejs.render(index_page, {
         title: "Index",
         content: msg,
         data: data,
-        filename: 'data_item',
     });
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.write(content);
     res.end();
 }
+
 
 
 //otherのアクセス処理
