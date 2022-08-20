@@ -93,7 +93,7 @@ function write_index(req,res) {
         cookie_data: cookie_data,
     });
     res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write(content);
+    res.write(content); 
     res.end();
 }
 
@@ -104,8 +104,8 @@ function setCookie(key, value, res) {
 }
 //クッキーの値を取得
 function getCookie(key, req) {
-    var cookie_data = req.headers.cookie != undefined?
-        req.headers.cookie: '';
+    var cookie_data = req.headers.cookie != undefined?  //三項演算子:条件と2つの値の計3個の要素で構成されている
+        req.headers.cookie: '';                         //最初の条件がtrueなら1つ目の値、falseなら２つ目の値が得られる
     var data = cookie_data.split(';');
     for (var i in data) {
         if (data[i].trim().startsWith(key + '=')) {
