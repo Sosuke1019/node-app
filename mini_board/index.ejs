@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+
+    <head>
+        <meta http-equiv="content-type" content="test/html"; charset="UTF-8">
+        <title>ミニメッセージボード</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+        <script>
+            function init() {
+                var id = localStorage.getItem('id');
+                if(id == null) {
+                    location.href = './login';
+                }
+                document.querySelector('#id').textContent = 'ID' + id;
+                document.querySelector('id_input').value = id;
+            }
+        </script>
+    </head>
+
+
+    <body class="container" onload="init();">
+        <header>
+            <h1 class="display-4">メッセージボード</h1>
+        </header>
+        <div role="main">
+            <p>※メッセージは最大10個まで保管されます</p>
+            <form method="post" action="/">
+                <p id="id"></p>
+                <input type="hidden" id="id_input" name="id">
+                <div class="form-group">
+                    <label for="msg">Message</label>
+                    <input type="text" name="msg" id="msg" class="formcontrol">
+                </div>
+                <input type="submit" value="送信" class="btn btn-primary">
+            </form>
+
+            <table class = "table">
+                <% for(var i in data) { %>
+                <%- include('data_item', {val:data[i]})%>
+                <% } %>
+            </table>
+        </div>
+    </body>
+
+
+</html>
+
+<!--
+    15・16 queryselector()とは？
+        ->cssセレクターで
+    26 roleとは？
+        ->要素の「役割」を明示的に示すもの
+        ->アクティビティの向上が目的。必要な時だけ私用する。
+    30 type=hiddenとは？
+        ->非表示データを送信する。送信したいデータがブラウザに表示されない。
+    33 type, name, id, classの違いは？
+        ->idは一つ。classは複数指定可能。typeはタイプ。
+    40 includeとは
+        ->パーシャルファイルを読み込んで組み込むために使う。
+        ->第一引数にパーシャルのファイル名。第二引数にパーシャル側に渡す値をまとめたオブジェクト用意
+-->>
