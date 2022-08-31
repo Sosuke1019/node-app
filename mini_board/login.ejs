@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
+
     <head>
-        <meta http-equiv="cotent-type" 
+    <meta http-equiv="content-type" 
         content="text/html; charset=UTF-8">
-        <title>ミニメッセージボード</title>
-        <link rel="stylesheet" 
-        href="https://stackpath.bootstrap.com/bootstrap/4.4.1/css/
-        bootstrap.min.css" crossorigin="anonymous">
-        <script>
-            function setId() {
-                var id = document.querySelector('#id_input').value;
-                localStorage.setItem('id',id); //「id」というキーに送信されたidの値を設定
-                location.href='/';
-            }
-        </script>
+    <title>ミニメッセージボード</title>
+    <link rel="stylesheet" 
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    crossorigin="anonymous">
+    <script>
+        function setId() {
+        var id = document.querySelector('#id_input').value;
+        localStorage.setItem('id', id);
+        location.href = '/';
+        }
+    </script>
     </head>
 
     <body class="container" onload="init();">
         <header>
-
+            <h1 class="display-4">メッセージボード</h1>
         </header>
         <div role="main">
-            <p>メッセージボード</p>
-            <div>
-                <label for="id_input">Login name:</label>
-                <input type="text" id="id_imput class="form-control>
-            </div>
-            <button onclick="setId();" class="btn btn-primary">送信</button>
+            <p>あなたのログインネームを入力下さい。</p>
+            <div class="form-group">
+            <label for="id_input">Login name:</label>
+            <input type="text" id="id_input" class="form-control">
+        </div>
+        <button onclick="setId();" class="btn btn-primary">送信</button>
         </div>
     </body>
 </html>
