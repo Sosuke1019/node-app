@@ -4,19 +4,15 @@ const ejs = require('ejs');
 const url = require('url');
 const qs = require('querystring');
 
-
 const index_page = fs.readFileSync('./index.ejs', 'utf8');
 const login_page = fs.readFileSync('./login.ejs', 'utf8');
-
 
 const max_num = 10; // 最大保管数
 const filename = 'mydata.txt'; // データファイル名
 var message_data; // データ
 readFromFile(filename);
 
-
 var server = http.createServer(getFromClient);
-
 
 server.listen(3000);
 console.log('Server start!');
@@ -60,7 +56,7 @@ function res_index(req,res) {
 
         //データ受信のイベント処理
         req.on('data',function(data) {
-        body += data;
+            body += data;
         }) ;
 
         //データ受信終了のイベント処理
@@ -92,26 +88,27 @@ function write_index(req, res) {
 
 //テキストファイルをロード
 function readFromFile(fname) {
-    fs.readFile(fname, 'utf-8',(err,data) => {
+    fs.readFile(fname, 'utf8', (err, data) => {
         message_data = data.split('\n');
     })
 }
 
-//データを更新
+
+// データを更新
 function addToData(id, msg, fname, req) {
-    var obj = {'id': id, 'msg':msg};
+    var obj = { 'id': id, 'msg': msg };
     var obj_str = JSON.stringify(obj);
-    console.log('add data: ' + obj.str);
+    console.log('add data: ' + obj_str);
     message_data.unshift(obj_str);
-    if(message_data.length > max_num) {
+    if (message_data.length > max_num) {
         message_data.pop();
     }
-    saveToFilename(fname);
+    saveToFile(fname);
 }
 
 
 //データを保存
-function saveToFilename(fname) {
+function saveToFile(fname) {
     var data_str = message_data.join('\n');
     fs.writeFile(fname, data_str, (err) => {
         if (err) { throw err; }
@@ -120,10 +117,12 @@ function saveToFilename(fname) {
 
 /*
 5 querystringとは?
+    ->クエリーテキストを処理するための機能を提供するモジュール
 29 req,resのイメージが出来ていない
 58 req.method == 'POST' この仕組みがよくわかってない
 95 err とは?
 103 stringify?
 105 unshift?
 117 throw?
+111 fnameとは?
 */
