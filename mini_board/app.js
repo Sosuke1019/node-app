@@ -9,7 +9,7 @@ const login_page = fs.readFileSync('./login.ejs', 'utf8');
 
 const max_num = 10; // 最大保管数
 const filename = 'mydata.txt'; // データファイル名
-var message_data; // データ
+var message_data; // データを保管しておくための変数
 readFromFile(filename);
 
 var server = http.createServer(getFromClient);
@@ -96,8 +96,8 @@ function readFromFile(fname) {
 
 // データを更新
 function addToData(id, msg, fname, req) {
-    var obj = { 'id': id, 'msg': msg };
-    var obj_str = JSON.stringify(obj);
+    var obj = { 'id': id, 'msg': msg }; //送信されてきたデータをオブジェクトにまとめる
+    var obj_str = JSON.stringify(obj);  //作成されたオブジェクトをJSON形式のテキストに変換。parseと逆の働き。
     console.log('add data: ' + obj_str);
     message_data.unshift(obj_str);
     if (message_data.length > max_num) {
@@ -109,8 +109,8 @@ function addToData(id, msg, fname, req) {
 
 //データを保存
 function saveToFile(fname) {
-    var data_str = message_data.join('\n');
-    fs.writeFile(fname, data_str, (err) => {
+    var data_str = message_data.join('\n'); //配列の一つ一つの値を改行して1つのテキストにまとめたもの
+    fs.writeFile(fname, data_str, (err) => { //fsオブジェクトのwriteFileというメソッド
         if (err) { throw err; }
     });
 }
