@@ -3,12 +3,23 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var hello = require('./routes/hello');
 
 var app = express();
+
+
+var session_opt = { //セッションのオプション設定の値をsession_opt変数に用意
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {maxAge: 60 * 60 * 1000}
+};
+app.use(session(session_opt)); //app.useでsession関数を設定し、session関数が機能するようになる
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views')); //テンプレートファイルが保管される場所
