@@ -23,10 +23,29 @@ router.get('/',(req, res, next) => {
                 content: rows // 取得したレコードデータ
             };
             //hello.ejsファイルを指す
-            res.render('hello', data);
+            res.render('hello/index', data);
             }
         }); 
     }); 
+});
+
+router.get('/add', (req,res,next) => {
+    var data = {
+        title: 'Hello/add',
+        content: '新しいレコードを入力'
+    }
+    res.render('hello/add',data)
+});
+
+//フォーム送信されたときの処理
+router.post('/add', (req,res,next) => {
+    const nm = req.body.name;
+    const ml = req.body.mail;
+    const ag = req.body.age;
+    db.serialize (() => {
+        db.run('insert into mydata (name, mail, age) values(?, ?, ?)', nm, ml, ag);
+    });
+    res.redirect('/hello');
 });
 
 module.exports = router;
