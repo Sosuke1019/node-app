@@ -9,14 +9,20 @@ const db = new sqlite3.Database('mydb.sqlite3');
 router.get('/',(req, res, next) => {
     // データベースのシリアライズ
     db.serialize(() => {
+        var rows = "";
       //レコードをすべて取り出す
-      db.all("select * from mydata",(err, rows) => {
+      db.each("select * from mydata",(err, row) => {
         // データベースアクセス完了時の処理
+        if (!err) {
+            rows += "<tr><th>" + row.id + "</th><td>"+ row.name + "</td><td></tr>";
+        }
+    }, (err, count) => {
         if (!err) {
             var data = {
                 title: 'Hello!',
                 content: rows // 取得したレコードデータ
             };
+            //hello.ejsファイルを指す
             res.render('hello', data);
             }
         }); 
