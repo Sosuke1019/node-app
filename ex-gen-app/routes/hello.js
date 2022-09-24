@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sqlite3 = require('sqlite3'); // 追加
+const { check, validationResult } = require('express-validator');
 
 // データベースオブジェクトの取得
 const db = new sqlite3.Database('mydb.sqlite3');
@@ -31,21 +32,50 @@ router.get('/',(req, res, next) => {
 
 router.get('/add', (req,res,next) => {
     var data = {
-        title: 'Hello/add',
-        content: '新しいレコードを入力'
+        title: 'Hello/Add',
+        content: '新しいレコードを入力',
+        form: {name:'', mail:'', age:0}
     }
-    res.render('hello/add',data)
+    res.render('hello/add',data);
 });
 
 //フォーム送信されたときの処理
-router.post('/add', (req,res,next) => {
-    const nm = req.body.name;
-    const ml = req.body.mail;
-    const ag = req.body.age;
-    db.serialize (() => {
-        db.run('insert into mydata (name, mail, age) values(?, ?, ?)', nm, ml, ag);
-    });
-    res.redirect('/hello');
+router.post('/add', [
+    check('name','NAME は必ず入力して下さい。').notEmpty().escape(),
+    check('mail','MAIL はメールアドレスを記入して下さい。').isEmail().escape(),
+    check('age', 'AGE は0以上120以下で入力下さい。').custom(value => {
+        return value >= 0 & value <= 120;
+    })
+], (req, res, next) => {
+    //バリデーションのチェックを実行した結果をResultというオブジェクトとして返す
+    const errors = validationResult(req);
+
+    //ResultにErrorがあるかどうかを"isEmpty"メソッドでチェックする
+    //isEmptyがfalseの場合(Errorが追加されている状態)のみエラーの処理を行っている
+    if (!errors.isEmpty()) {
+        var result = '<ul class="text-danger">';
+        var result_arr = errors.array();
+        for(var n in result_arr) {
+            //msgはcheck関数の第二引数で指定したエラーメッセージが設定されているプロパティ
+            //エラーメッセージをresultにまとめている
+            result += '<li>' + result_arr[n].msg + '</li>'
+        }
+        result += '</ul>';
+        var data = {
+            title: 'Hello/Add',
+            content: result,
+            form: req.body
+        }
+        res.render('hello/add', data);
+    } else {
+        var nm = req.body.name;
+        var ml = req.body.mail;
+        var ag = req.body.age;
+        db.serialize(() => {
+            db.run('insert into mydata (name, mail, age) values (?, ?, ?)', nm, ml, ag);
+        });
+        res.redirect('/hello');
+    }
 });
 
 router.get('/show', (req, res, next) => {
