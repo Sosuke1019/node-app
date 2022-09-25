@@ -1,3 +1,4 @@
+const { query } = require('express');
 const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
@@ -59,6 +60,25 @@ router.post('/edit',(req, res, next)=> {
     usr.mail = req.body.mail;
     usr.age = req.body.age;
     usr.save().then(()=>res.redirect('/users'));
+  });
+});
+
+router.get('/delete',(req,res,next) =>{
+  //クエリーパラメータのidを使ってUserモデルを取得し、テンプレート側に渡して表示している
+  db.User.findByPk(req.query.id)
+  .then(usr => {
+    var data = {
+      title: 'Users/Delete',
+      form: usr
+    }
+    res.render('users/delete', data);
+  });
+});
+
+router.post('/delete',(req,res,next) =>{
+  db.User.findByPk(req.body.id)
+  .then(usr => {
+    usr.destroy().then(()=>res.redirect('/users'));
   });
 });
 
