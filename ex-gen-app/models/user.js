@@ -1,11 +1,31 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  //sequelize.define(モデル名,モデルの属性,オプション);
   const User = sequelize.define('User', {
-    name: DataTypes.STRING,
-    pass: DataTypes.STRING,
-    mail: DataTypes.STRING,
-    age: DataTypes.INTEGER
+    name: {
+      type:DataTypes.STRING,
+      validate: {
+        notEmpty: true
+      }
+    },
+    pass: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true
+      }
+    },
+    mail: {
+      type: DataTypes.STRING,
+      validate: {
+        isEmail: true
+      }
+    },
+    age: {
+      type: DataTypes.INTEGER,
+      validate: {
+        isInt: true,
+        min: 0
+      }
+    }
   }, {});
   //associateとは他のモデルとの関連に関するもの
   User.associate = function(models) {
