@@ -97,39 +97,39 @@ router.post('/delete',(req,res,next) =>{
 });
 
 // /loginにアクセスした際の処理
-router.get('/login',(req,res,next) => {
+router.get('/login', (req, res, next) => {
   var data = {
-    title: 'Users/Login',
-    content: '名前とパスワードを入力下さい'
+    title:'Users/Login',
+    content:'名前とパスワードを入力下さい。'
   }
-  res.render('users/login',data);
+  res.render('users/login', data);
 });
 
+
 // フォームを送信された際の処理
-router.post('/login',(req,res,next) => {
+router.post('/login', (req, res, next) => {
   db.User.findOne({
-    where: {
+    where:{
       name:req.body.name,
       pass:req.body.pass,
     }
-  }).then (usr => {
-    if(usr != null) {
+  }).then(usr=>{
+    if (usr != null) {
       //セッションのログインという値に取り出したUserオブジェクトを保存
-      res.session.login = usr;
+      req.session.login = usr;
       let back = req.session.back;
-      if (back == mull) {
+      if (back == null){
         back = '/';
       }
       res.redirect(back);
     } else {
       var data = {
-        title: 'Users/Login',
-        content: '名前かパスワードに問題があります。再度入力下さい。'
+        title:'Users/Login',
+        content:'名前かパスワードに問題があります。再度入力下さい。'
       }
       res.render('users/login', data);
     }
   })
 });
-
 
 module.exports = router;

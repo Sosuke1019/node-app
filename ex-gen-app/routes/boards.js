@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models/index');
 const { Op } = require("sequelize");
-const { route } = require('./users');
-const { OPEN_READWRITE } = require('sqlite3');
 
 const pnum = 10;
 
@@ -13,10 +11,10 @@ IDでクライアントを特定し、クライアントごとに値をサーバ
 //ログインのチェック
 function check(req,res) {
     //セッションからloginという値がnullかどうかを調べる
-    if(req.session.login = null) {
+    if (req.session.login == null) {
         //'boards'はログイン後に戻るページのアドレス
-        req.session.back = 'boards';
-        req.redirect('users/login');
+        req.session.back = '/boards';
+        res.redirect('/users/login');
         //checkを呼び出した結果がtureならログインしていない事が分かる処理にした
         return true;
     } else {
@@ -26,14 +24,14 @@ function check(req,res) {
 
 //トップページ
 router.get('/',(req,res,next) => {
-    res.redirect('boards/0');
+    res.redirect('/boards/0');
 });
 
 /* paramsでクエリーパラメータを使う*/
 
 /*トップページにページ番号をつけてアクセス
 この番号を使い、一定数ごとのBoardを取り出して表示*/
-router.get('/:page', (req,res,next) => {
+router.get('/:page',(req, res, next)=> {
     if (check(req,res)){ return };
     /*ページ番号をpageパラメータから取り出して変数に代入
     整数にするために1をかける*/
@@ -45,51 +43,51 @@ router.get('/:page', (req,res,next) => {
         limit: pnum,
         //orderは配列を使って値を用意している。"createAt"は並び順の基準となる項目名。
         order: [
-            ['createAt', 'DESC']
+            ['createdAt', 'DESC']
         ],
         include: [{
             model: db.User,
             required: true
         }]
-    }).then(brds => {
-        var data = {
-            title: 'Boards',
-            content: brds,
-            page:pg
-        }
+        }).then(brds => {
+            var data = {
+                title: 'Boards',
+                login:req.session.login,
+                content: brds,
+                page:pg
+            }
         res.render('boards/index', data);
     });
 });
 
-//メッセージフォームの送信処理
-router.post('/add', (req,res,next) => {
+// メッセージフォームの送信処理
+router.post('/add',(req, res, next)=> {
     if (check(req,res)){ return };
     db.sequelize.sync()
-    .then(() => db.Board.create({
-        userId: req.session.login.id,
-        message: req.body.msg
-    })
-    .then(brd => {
-        res.redirect('/boards');
-    })
-    .catch((err) => {
-        res.redirect('/boards');
-    })
+        .then(() => db.Board.create({
+            userId: req.session.login.id,
+            message:req.body.msg
+        })
+        .then(brd=>{
+            res.redirect('/boards');
+        })
+        .catch((err)=>{
+            res.redirect('/boards');
+        })
     )
 });
 
 //利用者のホーム
-router.get('/home/:user/:id/:page', (req,res,next) => {
-    if(check(req,res)){ return };
+router.get('/home/:user/:id/:page',(req, res, next)=> {
+    if (check(req,res)){ return };
     const id = req.params.id * 1;
     const pg = req.params.page * 1;
-    //Boardを取り出す
     db.Board.findAll({
         where: {userId: id},
         offset: pg * pnum,
         limit: pnum,
         order: [
-            ['createAt','DESC']
+            ['createdAt', 'DESC']
         ],
         //Userのオブジェクトも合わせて取り出す
         include: [{
@@ -99,15 +97,14 @@ router.get('/home/:user/:id/:page', (req,res,next) => {
     }).then(brds => {
         var data = {
             title: 'Boards',
-            login: req.session.login,
-            userId: id,
-            userName: req.params.user,
+            login:req.session.login,
+            userId:id,
+            userName:req.params.user,
             content: brds,
-            page: pg
+            page:pg
         }
         res.render('boards/home', data);
     });
 });
-
 module.exports = router;
 
