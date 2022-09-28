@@ -102,7 +102,7 @@ router.get('/login',(req,res,next) => {
     title: 'Users/Login',
     content: '名前とパスワードを入力下さい'
   }
-  res.render('users/login',data)
+  res.render('users/login',data);
 });
 
 // フォームを送信された際の処理
