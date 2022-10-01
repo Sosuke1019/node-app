@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
   //associateとは他のモデルとの関連に関するもの
   User.associate = function(models) {
     User.hasMany(models.Board);
+    User.hasMany(models.Markdata);
   };
   return User;
 };
