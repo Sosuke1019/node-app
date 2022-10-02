@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 const db = require('../models/index');
-const { op } = require('sequelize');
+const { Op } = require('sequelize');
 const MarkdownIt = require('markdown-it');
 const { ChainCondition } = require('express-validator/src/context-items');
 const { ResultWithContext } = require('express-validator/src/chain');
@@ -43,13 +43,13 @@ router.get('/', (req,res,next) => {
 
 //検索フォームの送信処理
 //送信フォームの値を使ってMarkdataモデルを検索しテンプレート側に渡す処理
-router.post('/', (req,res,next) => {
-    if(check(req,res)){ return };
+router.post('/', (req, res, next)=> {
+    if (check(req,res)){ return };
     db.Markdata.findAll({
-        where: {
-            userId: req.session.login.id,
-            //検索フォームに入力されたテキストが含まれているものを取り出すようにしている
-            content: {[Op.like]: '%' + req.body.find + '%'},
+        where:{
+            userId:req.session.login.id,
+             //検索フォームに入力されたテキストが含まれているものを取り出すようにしている
+            content: {[Op.like]:'%'+req.body.find+'%'},
         },
         order: [
             ['createdAt', 'DESC']
@@ -58,13 +58,15 @@ router.post('/', (req,res,next) => {
         var data = {
             title: 'Markdown Search',
             login: req.session.login,
-            message:'※"' + req.body.find + '" で検索された最近の投稿データ',
-            form: req.body,
-            content: mds
+            message:'※"' + req.body.find + 
+            '" で検索された最近の投稿データ',
+            form:req.body,
+            content:mds
         };
         res.render('md/index', data);
     });
 });
+
 
 //新規作成ページの表示(/md/addにアクセスした際の処理)
 router.get('/add', (req, res, next) => {
@@ -111,7 +113,7 @@ router.get('/mark/:id', (req, res, next) => {
 
 
 //Markdataの更新処理
-router.post('/mark/id', (req,res,next) => {
+router.post('/mark/:id', (req,res,next) => {
     if(check(req,res)){ return };
     //findByPkで指定IDのMarkdataモデルを取得
     //そのthenでcontentの内容を置き換えてsaveで保存
@@ -149,5 +151,3 @@ function makepage(req, res, model, flg) {
 }
 
 module.exports = router;
-
-
